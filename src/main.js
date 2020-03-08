@@ -22,8 +22,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
 		light.position.set( 0, 100, 0.25 );
 		directionalLight.castShadow = true;
-		directionalLight.shadow.mapSize.width = Math.pow(2, 13);  // default
-		directionalLight.shadow.mapSize.height = Math.pow(2, 13); // default
+		directionalLight.shadow.mapSize.width = Math.pow(2, 12);  // default
+		directionalLight.shadow.mapSize.height = Math.pow(2, 12); // default
 		directionalLight.shadow.camera.near = -100;
 		directionalLight.shadow.camera.far = 1000;
 
