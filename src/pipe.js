@@ -144,7 +144,11 @@ class Pipe {
 		}
 
 		if (this.realTicks > this.config.maximumTicks) {
-			window.location.reload();
+			console.log('reload')
+			if (!window.reloading) {
+				window.reloading = true;
+				window.location.reload();
+			}
 		}
 	}
 }
