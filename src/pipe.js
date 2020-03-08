@@ -43,12 +43,12 @@ class Pipe {
 		// x+, x-, y+, y-, z+, z-
 		this.direction = rand(6);
 
-		this.cylinder_geometry = new THREE.CylinderBufferGeometry( this.config.pipeWidth, this.config.pipeWidth, this.config.tickDistance, 32 );
+		this.cylinder_geometry = new THREE.CylinderBufferGeometry( this.config.pipeWidth, this.config.pipeWidth, this.config.tickDistance, 12 );
 		this.cylinder_material = new THREE.MeshPhongMaterial( {color: this.config.color} );
 		this.cylinder_material.shininess = 100;
 
-		this.sphere_geometry = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.1, 32, 32 );
-		this.sphere_geometry2 = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.25, 32, 32 );
+		this.sphere_geometry = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.1, 12, 12 );
+		this.sphere_geometry2 = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.25, 12, 12 );
 		
 
 	}
