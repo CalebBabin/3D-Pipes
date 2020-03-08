@@ -95,7 +95,7 @@ class Pipe {
 		this.lastPos = [...this.pos];
 		this.lastDirection = this.direction;
 
-		if (this.ticks % this.config.pipeTickInterval == 0 && this.realTicks < this.config.maximumTicks) {
+		if (this.ticks % this.config.pipeTickInterval == 0) {
 			this.realTicks++;
 			this.changeDirection();
 
