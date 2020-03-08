@@ -1,4 +1,15 @@
 import * as THREE from 'three';
+import { STLLoader } from './STLLoader.js';
+
+const teapot_url = require('./utah_teapot.stl');
+
+let teapot_geometry = null;
+
+const teapot_loader = new THREE.STLLoader();
+teapot_loader.load( teapot_url, function ( geometry ) {
+	console.log(geometry)
+	teapot_geometry = geometry;
+});
 
 const rand = (max) => {
 	if (typeof max === 'object') {
@@ -110,13 +121,24 @@ class Pipe {
 				cylinder.position.z += this.config.tickDistance/2;
 				group.add(cylinder);
 				
+				
 				const temp_geometry = Math.random() < 0.75 ? this.sphere_geometry : this.sphere_geometry2;
-				const sphere = new THREE.Mesh( (this.direction === this.lastDirection) ? this.sphere_geometry : temp_geometry, this.cylinder_material );
+				let sphere = new THREE.Mesh( (this.direction === this.lastDirection) ? this.sphere_geometry : temp_geometry, this.cylinder_material );
+
+				if (teapot_geometry && Math.random()*1000 < 1) {
+					sphere = new THREE.Mesh( teapot_geometry, this.cylinder_material );
+					sphere.rotation.x = -Math.PI/2
+					sphere.scale.x = 0.75;
+					sphere.scale.y = 0.75;
+					sphere.scale.z = 0.75;
+					sphere.position.y -= this.config.pipeWidth/1.5;
+				}
+
 				sphere.castShadow = true;
 				sphere.receiveShadow = true;
-				sphere.position.x = this.lastPos[0];
-				sphere.position.y = this.lastPos[1];
-				sphere.position.z = this.lastPos[2];
+				sphere.position.x += this.lastPos[0];
+				sphere.position.y += this.lastPos[1];
+				sphere.position.z += this.lastPos[2];
 				this.scene.add( sphere );
 			}
 		}
