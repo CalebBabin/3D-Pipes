@@ -40,6 +40,12 @@ window.addEventListener('DOMContentLoaded', () => {
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		window.addEventListener('resize', ()=>{
+			console.log('resizing', camera.aspect);
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		})
 		document.body.appendChild(renderer.domElement);
 
 		const numberOfPipes = Math.random()*4;
