@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 const Pipe = require('./pipe.js');
 
+
+const pipeMap = new Map();
+
 window.addEventListener('DOMContentLoaded', () => {
 	let camera, scene, renderer;
 	let pipes = [];
@@ -48,9 +51,9 @@ window.addEventListener('DOMContentLoaded', () => {
 		})
 		document.body.appendChild(renderer.domElement);
 
-		const numberOfPipes = Math.random()*4;
+		const numberOfPipes = Math.random() * 4 + 1;
 		for (let index = 0; index < numberOfPipes; index++) {
-			pipes.push(new Pipe(scene));
+			pipes.push(new Pipe(scene, {map: pipeMap}));
 		}
 	}
 

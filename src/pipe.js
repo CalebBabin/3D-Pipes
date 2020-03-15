@@ -29,20 +29,28 @@ const removeTarget = (array, target) => {
 class Pipe {
 	constructor (scene, config = {}) {
 		this.config = Object.assign({
-			color: 0x888888*Math.random()+0x888888,
-			tickDistance: 7,
+			color: 0x777777*Math.random()+0x888888,
+			tickDistance: 4,
 			pipeWidth: 2,
-			pipeTickInterval: 4,
-			maximumTicks: 340,
+			pipeTickInterval: 2,
+			maximumTicks: 1000,
 			maximumDistance: 100,
+			chanceOfStraight: 25,
 		}, config);
 
 		this.scene = scene;
 
+		const randomPosition = () => {
+			let position = (rand(this.config.maximumDistance) - this.config.maximumDistance/2)*this.config.tickDistance;
+			while (position > this.config.maximumDistance) position -= this.config.maximumDistance;  
+			while (position < -this.config.maximumDistance) position += this.config.maximumDistance;  
+			return position;
+		}
+
 		this.pos = [
-			rand(10)-5, // x
-			rand(10)-5, // y
-			rand(10)-5, // z
+			randomPosition(), // x
+			randomPosition(), // y
+			randomPosition(), // z
 		];
 
 		this.meshes = [];
@@ -70,8 +78,20 @@ class Pipe {
 
 		let options = [0,1,2,3,4,5];
 
-		for (let index = 0; index < 5; index++) {
+		for (let index = 0; index < this.config.chanceOfStraight; index++) {
 			options.push(this.direction);
+		}
+
+		if (this.config.map) {
+			for (let direction = 0; direction < 6; direction++) {
+				let futurePosition = [...this.pos];
+
+				futurePosition[Math.floor(direction/2)] += (direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
+				
+				if (this.config.map.has(`${futurePosition[0]},${futurePosition[1]},${futurePosition[2]}`)) {
+					removeTarget(options, direction);
+				}
+			}
 		}
 
 		removeTarget(options, (this.direction % 2 === 0) ? this.direction + 1 : this.direction - 1 );
@@ -100,6 +120,9 @@ class Pipe {
 			this.changeDirection();
 
 			this.pos[Math.floor(this.direction/2)] += (this.direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
+			if (this.config.map) {
+				this.config.map.set(`${this.pos[0]},${this.pos[1]},${this.pos[2]}`, true);
+			}
 
 			if (this.direction === this.lastDirection && this.activePipe) {
 				this.activePipe.scale.y++;
