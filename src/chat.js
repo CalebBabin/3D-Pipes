@@ -69,7 +69,6 @@ function getEmoteArrayFromMessage(text, emotes) {
 	}
 
 	if (output.length > 0) {
-		console.log(output);
 		toiletEmotesArray.push({
 			progress: 0,
 			x: Math.random(),

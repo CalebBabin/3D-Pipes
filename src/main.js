@@ -50,7 +50,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		window.addEventListener('resize', () => {
-			console.log('resizing', camera.aspect);
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 			renderer.setSize(window.innerWidth, window.innerHeight);
@@ -96,7 +95,6 @@ window.addEventListener('DOMContentLoaded', () => {
 							emote.sprite.scale.z = globalConfig.emoteScale;
 
 							scene.add(emote.sprite);
-							console.log(emote);
 						}
 
 						emote.sprite.position.y = (emotes.progress-0.5)*2*globalConfig.areaSize*1.5;
