@@ -50,7 +50,7 @@ function getEmoteArrayFromMessage(text, emotes) {
 					const arr = emotes[i][0].split('-');
 					if (parseInt(arr[0]) === counter) {
 						output.push({
-							material: drawEmote('http://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0'),
+							material: drawEmote('https://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0'),
 							sprite: undefined,
 						});
 						emoteCache[string] = true;
