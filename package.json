@@ -19,6 +19,7 @@
 	},
 	"homepage": "https://github.com/CalebBabin/3D-Pipes#readme",
 	"dependencies": {
+		"gif-frames": "^1.0.1",
 		"js": "^0.1.0",
 		"parcel": "^1.12.4",
 		"sass": "^1.26.2",

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 const tmi = require('tmi.js');
+const GIF = require('./gifLoader.js');
 
-let channels = ['antimattertape', 'moonmoon'];
+let channels = ['moonmoon'];
 const query_vars = {};
 const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 	query_vars[key] = value;
@@ -61,7 +62,10 @@ function getEmoteArrayFromMessage(text, emotes) {
 			const bttvOutput = checkIfBTTVEmote(string);
 			
 			if (bttvOutput !== false) {
-				output.push(bttvOutput);
+				output.push({
+					material: bttvOutput,
+					sprite: undefined,
+				});
 				emoteCache[string] = true;
 			}
 		}
@@ -125,11 +129,15 @@ const emoteMaterials = {};
 
 const drawEmote = (url) => {
 	if (!emoteMaterials[url]) {
-		const spriteMap = new THREE.TextureLoader().load( url );
-		const spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
-		emoteMaterials[url] = spriteMaterial;
+		/*const loader = new THREE.TextureLoader().load(url, (texture) => {
+			console.log('loaded', texture);
+		});
+		emoteMaterials[url] = new THREE.SpriteMaterial( { map: loader, color: 0xFF0000 } );*/
+
+		const gif = new GIF(url);
+		emoteMaterials[url] = gif.material;
 	}
 	return emoteMaterials[url];
 }
 
-module.exports = toiletEmotesArray;
+module.exports = {emotes: toiletEmotesArray, materials: emoteMaterials};
