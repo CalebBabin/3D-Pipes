@@ -32,7 +32,7 @@ const emotes = {};
 const checkIfBTTVEmote = (string) => {
 	if (bttvEmotes[string] && !emotes[string]) {
 		//emotes[string] = true;
-		return drawEmote('https://cdn.betterttv.net/emote/' + bttvEmotes[string] + '/3x');
+		return drawEmote('https://gif-emotes.opl.io/gif/' + bttvEmotes[string] + '.gif');
 	}
 	return false;
 }
