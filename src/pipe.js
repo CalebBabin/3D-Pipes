@@ -33,7 +33,7 @@ class Pipe {
 			tickDistance: 4,
 			pipeWidth: 2,
 			pipeTickInterval: 2,
-			maximumTicks: 40000,
+			maximumTicks: 400,
 			maximumDistance: 100,
 			chanceOfStraight: 25,
 		}, config);
