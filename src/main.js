@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	draw();
 
 	function init() {
-		camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
+		camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 10, 1000);
 		camera.position.z = 100;
 		camera.position.x = 100;
 		camera.lookAt(0, 0, 0);
