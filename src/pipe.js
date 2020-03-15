@@ -7,7 +7,6 @@ let teapot_geometry = null;
 
 const teapot_loader = new THREE.STLLoader();
 teapot_loader.load( teapot_url, function ( geometry ) {
-	console.log(geometry)
 	teapot_geometry = geometry;
 });
 
@@ -167,7 +166,6 @@ class Pipe {
 		}
 
 		if (this.realTicks > this.config.maximumTicks) {
-			console.log('reload')
 			if (!window.reloading) {
 				window.reloading = true;
 				window.location.reload();
