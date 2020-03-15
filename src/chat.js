@@ -135,7 +135,7 @@ const drawEmote = (url) => {
 		emoteMaterials[url] = new THREE.SpriteMaterial( { map: loader, color: 0xFF0000 } );*/
 
 		const gif = new GIF(url);
-		emoteMaterials[url] = gif.material;
+		emoteMaterials[url] = gif;
 	}
 	return emoteMaterials[url];
 }

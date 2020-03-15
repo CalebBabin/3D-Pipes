@@ -32,7 +32,7 @@ class Pipe {
 			tickDistance: 4,
 			pipeWidth: 2,
 			pipeTickInterval: 2,
-			maximumTicks: 40000,
+			maximumTicks: 400,
 			maximumDistance: 100,
 			chanceOfStraight: 25,
 		}, config);
@@ -120,7 +120,7 @@ class Pipe {
 
 			this.pos[Math.floor(this.direction/2)] += (this.direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
 			if (this.config.map) {
-				this.config.map.set(`${this.pos[0]},${this.pos[1]},${this.pos[2]}`, true);
+				this.config.map.set(`${this.pos[0]},${this.pos[1]},${this.pos[2]}`, Number(this.direction));
 			}
 
 			if (this.direction === this.lastDirection && this.activePipe) {

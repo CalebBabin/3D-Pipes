@@ -19,7 +19,8 @@ class GIF_Instance {
 		this.ctx = this.canvas.getContext('2d');
 
 		this.texture = new THREE.CanvasTexture(this.canvas);
-		this.material = new THREE.MeshBasicMaterial({ map: this.texture, transparent: true });
+		this.material = new THREE.SpriteMaterial({ map: this.texture, transparent: true });
+		this.rot_material = new THREE.SpriteMaterial({ map: this.texture, transparent: true, rotation: Math.PI / 2 });
 	}
 
 	imageFallback() {

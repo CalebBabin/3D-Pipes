@@ -72,6 +72,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		for (let index = 0; index < chatIntegration.emotes.length; index++) {
 			const emotes = chatIntegration.emotes[index];
+
+			if (emotes.progress === 0) {
+				const key = getRandomKey(pipeMap);
+				const direction = pipeMap.get(key);
+				const coord = key.split(',');
+				for (let index = 0; index < coord.length; index++) {
+					coord[index] = Number(coord[index]);
+				};
+
+				emotes.x = coord[0];
+				emotes.y = coord[1];
+				emotes.z = coord[2];
+				emotes.direction = direction;
+			}
+
 			if (emotes.progress > 1) {
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
@@ -85,12 +100,39 @@ window.addEventListener('DOMContentLoaded', () => {
 					const emote = emotes.emotes[i];
 					if (emote) {
 						if (!emote.sprite) {
-							emote.sprite = new THREE.Sprite(emote.material);
-							emote.sprite.position.x = ((emotes.x-0.5)*2)*globalConfig.areaSize;
-							emote.sprite.position.z = ((emotes.y-0.5)*2)*globalConfig.areaSize;
+							emote.sprite = (emotes.direction === 2 || emotes.direction === 3) ?
+								new THREE.Sprite(emote.material.rot_material) :
+								new THREE.Sprite(emote.material.material);
 
-							emote.sprite.position.x += i*globalConfig.emoteScale;
-							emote.sprite.position.z -= i*globalConfig.emoteScale;
+							emote.sprite.position.x = emotes.x;
+							emote.sprite.position.y = emotes.y;
+							emote.sprite.position.z = emotes.z;
+
+							if (emotes.direction === 0 || emotes.direction === 1) {
+								emote.sprite.position.x += 0;
+								emote.sprite.position.y += 5;
+								emote.sprite.position.z += 0;
+
+								emote.sprite.position.x += i*globalConfig.emoteScale;
+								emote.sprite.position.z -= i*globalConfig.emoteScale;
+							}
+							if (emotes.direction === 2 || emotes.direction === 3) {
+								emote.sprite.position.x += 0;
+								emote.sprite.position.y += 0;
+								emote.sprite.position.z += 5;
+								
+								emote.sprite.position.y += i*globalConfig.emoteScale;
+
+								emote.sprite.rotation.z += Math.PI/2;
+							}
+							if (emotes.direction === 4 || emotes.direction === 5) {
+								emote.sprite.position.x += 0;
+								emote.sprite.position.y += 5;
+								emote.sprite.position.z += 0;
+								
+								emote.sprite.position.x += i*globalConfig.emoteScale;
+								emote.sprite.position.z -= i*globalConfig.emoteScale;
+							}
 
 							emote.sprite.scale.x = globalConfig.emoteScale;
 							emote.sprite.scale.y = globalConfig.emoteScale;
@@ -100,7 +142,6 @@ window.addEventListener('DOMContentLoaded', () => {
 							emote.sprite.lookAt(camera.position);
 						}
 
-						emote.sprite.position.y = (emotes.progress-0.5)*2.5*globalConfig.areaSize;
 					}
 
 				}
@@ -115,3 +156,15 @@ window.addEventListener('DOMContentLoaded', () => {
 setTimeout(()=>{
 	window.location.reload();
 }, 10000);*/
+
+
+
+function getRandomKey(collection) {
+    let index = Math.floor(Math.random() * collection.size);
+    let cntr = 0;
+    for (let key of collection.keys()) {
+        if (cntr++ === index) {
+            return key;
+        }
+    }
+}
