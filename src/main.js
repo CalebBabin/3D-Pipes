@@ -117,9 +117,9 @@ window.addEventListener('DOMContentLoaded', () => {
 								emote.sprite.position.z -= i*globalConfig.emoteScale;
 							}
 							if (emotes.direction === 2 || emotes.direction === 3) {
-								emote.sprite.position.x -= 3;
+								emote.sprite.position.x -= 4;
 								emote.sprite.position.y += 0;
-								emote.sprite.position.z += 3;
+								emote.sprite.position.z += 4;
 								
 								emote.sprite.position.y += i*globalConfig.emoteScale;
 
