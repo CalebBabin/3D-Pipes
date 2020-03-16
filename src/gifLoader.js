@@ -10,7 +10,7 @@ class GIF_Instance {
 		this.frameData = [];
 
 		gifFrames({ url: url, frames: 'all', outputType: 'canvas', type: 'png' })
-			.then(this.setFrameData.bind(this))
+			.then(this.imageFallback.bind(this)) //this.setFrameData.bind(this))
 			.catch(this.imageFallback.bind(this));
 
 		this.canvas = document.createElement('canvas');
