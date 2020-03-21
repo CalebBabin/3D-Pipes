@@ -1,17 +1,40 @@
 import * as THREE from 'three';
-const gifFrames = require('gif-frames');
 
 class GIF_Instance {
-	constructor(url) {
-		this.url = url;
+	constructor(id) {
+		this.id = id;
 		this.gifTiming = 10;
 		this.lastFrame = Date.now();
 		this.currentFrame = 0;
-		this.frameData = [];
+		this.loadedImages = 0;
+		this.frames = [];
 
-		gifFrames({ url: url, frames: 'all', outputType: 'canvas', type: 'png' })
-			.then(this.imageFallback.bind(this)) //this.setFrameData.bind(this))
-			.catch(this.imageFallback.bind(this));
+		fetch(`https://gif-emotes.opl.io/gif/${id}`)
+		.then(r => r.json())
+		.then(frames => {
+			if (frames.count === 0) {
+				this.imageFallback();
+			} else {
+				
+				this.gifTiming = frames[0].frameInfo.delay;
+				this.frames = frames;
+				for (let index = 0; index < this.frames.length; index++) {
+					const frame = this.frames[index];
+					frame.image = new Image(frame.width, frame.height);
+					frame.image.crossOrigin = "anonymous";
+					frame.image.addEventListener('load', ()=>{
+						this.loadedImages++;
+						if (this.loadedImages >= this.frames.length) {
+							this.loadListener();
+						}
+					})
+					frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
+				}
+			}
+
+
+		})
+
 
 		this.canvas = document.createElement('canvas');
 		this.canvas.width = 128;
@@ -24,7 +47,6 @@ class GIF_Instance {
 	}
 
 	imageFallback() {
-
 		this.image = new Image();
 		this.image.crossOrigin = "anonymous";
 		this.image.addEventListener('load', this.imageFallbackListener.bind(this));
@@ -38,25 +60,13 @@ class GIF_Instance {
 		this.texture.needsUpdate = true;
 	}
 
-	setFrameData(frameData) {
-		this.gifTiming = frameData[0].frameInfo.delay;
-		this.frameData = frameData;
-		for (let index = 0; index < this.frameData.length; index++) {
-			const frame = this.frameData[index];
-			frame.image = frame.getImage();
-		}
-		this.loadListener();
-	}
-
 	loadListener() {
-		//let pow = 2;
-		//while (Math.pow(2, pow) < Math.max(this.image.width, this.image.height)) {
-		//	pow++;
-		//}
-		//this.canvas.width = Math.pow(2, pow);
-		//this.canvas.height = Math.pow(2, pow);
-		this.canvas.width = 128;
-		this.canvas.height = 128;
+		let pow = 2;
+		while (Math.pow(2, pow) < Math.max(this.image.width, this.image.height)) {
+			pow++;
+		}
+		this.canvas.width = Math.pow(2, pow);
+		this.canvas.height = Math.pow(2, pow);
 
 		this.update();
 	}
@@ -67,13 +77,15 @@ class GIF_Instance {
 		let timeDiff = Date.now() - this.lastFrame;
 		while (timeDiff > this.gifTiming * 10) {
 			this.currentFrame++;
-			if (this.currentFrame >= this.frameData.length) this.currentFrame = 0;
+			if (this.currentFrame >= this.frames.length) this.currentFrame = 0;
 			timeDiff -= this.gifTiming;
 			this.lastFrame += timeDiff;
 		}
 
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.drawImage(this.frameData[this.currentFrame].image, 0, 0);
+		if (!this.frames[this.currentFrame].interlaced) {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		}
+		this.ctx.drawImage(this.frames[this.currentFrame].image, this.frames[this.currentFrame].x, this.frames[this.currentFrame].y);
 		this.texture.needsUpdate = true;
 	}
 }
