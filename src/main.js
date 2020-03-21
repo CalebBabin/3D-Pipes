@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		light.position.set(0, 100, 0.25);
-		directionalLight.castShadow = true;
+		/*directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.width = Math.pow(2, 13);  // default
 		directionalLight.shadow.mapSize.height = Math.pow(2, 13); // default
 		directionalLight.shadow.camera.near = -100;
@@ -40,14 +40,14 @@ window.addEventListener('DOMContentLoaded', () => {
 		directionalLight.shadow.camera.left = -shadowCameraSize;
 		directionalLight.shadow.camera.bottom = -shadowCameraSize;
 		directionalLight.shadow.camera.top = shadowCameraSize;
-		directionalLight.shadow.camera.right = shadowCameraSize;
+		directionalLight.shadow.camera.right = shadowCameraSize;*/
 
 
 		scene.add(directionalLight);
 
 		renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		//renderer.shadowMap.enabled = true;
+		//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		window.addEventListener('resize', () => {
 			camera.aspect = window.innerWidth / window.innerHeight;

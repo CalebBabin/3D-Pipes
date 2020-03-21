@@ -31,10 +31,10 @@ class Pipe {
 			color: 0x777777*Math.random()+0x888888,
 			tickDistance: 4,
 			pipeWidth: 2,
-			pipeTickInterval: 2,
-			maximumTicks: 700,
-			maximumDistance: 100,
-			chanceOfStraight: 25,
+			pipeTickInterval: 1,
+			maximumTicks: 1400,
+			maximumDistance: 50,
+			chanceOfStraight: 40,
 		}, config);
 
 		this.scene = scene;
