@@ -2,7 +2,6 @@ import * as THREE from 'three';
 
 class GIF_Instance {
 	constructor(id) {
-		console.log(id);
 		this.id = id;
 		this.gifTiming = 10;
 		this.lastFrame = Date.now();
@@ -27,9 +26,12 @@ class GIF_Instance {
 						const frame = data.frames[index];
 						frame.image = new Image(frame.width, frame.height);
 						frame.image.crossOrigin = "anonymous";
-						setInterval(()=>{
-							frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
-						},1+index*20)
+						frame.image.addEventListener('load', ()=>{
+							this.loadedImages++;
+							if (this.loadedImages >= data.count) {
+							}
+						})
+						frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
 					}
 					this.loadListener();
 				}
@@ -90,7 +92,7 @@ class GIF_Instance {
 	}
 
 	update() {
-		window.requestAnimationFrame(this.update.bind(this));
+		window.setTimeout(this.update.bind(this), this.gifTiming*10);
 
 		let timeDiff = Date.now() - this.lastFrame;
 		while (timeDiff > this.gifTiming * 10) {

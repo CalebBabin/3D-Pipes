@@ -129,11 +129,6 @@ const emoteMaterials = {};
 
 const drawEmote = (url) => {
 	if (!emoteMaterials[url]) {
-		/*const loader = new THREE.TextureLoader().load(url, (texture) => {
-			console.log('loaded', texture);
-		});
-		emoteMaterials[url] = new THREE.SpriteMaterial( { map: loader, color: 0xFF0000 } );*/
-
 		const gif = new GIF(url);
 		emoteMaterials[url] = gif;
 	}
