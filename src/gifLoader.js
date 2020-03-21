@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 class GIF_Instance {
 	constructor(id) {
+		console.log(id);
 		this.id = id;
 		this.gifTiming = 10;
 		this.lastFrame = Date.now();
@@ -9,31 +10,33 @@ class GIF_Instance {
 		this.loadedImages = 0;
 		this.frames = [];
 
-		fetch(`https://gif-emotes.opl.io/gif/${id}`)
-		.then(r => r.json())
-		.then(frames => {
-			if (frames.count === 0) {
-				this.imageFallback();
-			} else {
-				
-				this.gifTiming = frames[0].frameInfo.delay;
-				this.frames = frames;
-				for (let index = 0; index < this.frames.length; index++) {
-					const frame = this.frames[index];
-					frame.image = new Image(frame.width, frame.height);
-					frame.image.crossOrigin = "anonymous";
-					frame.image.addEventListener('load', ()=>{
-						this.loadedImages++;
-						if (this.loadedImages >= this.frames.length) {
-							this.loadListener();
-						}
-					})
-					frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
+		if (id.match(/http/)) {
+			this.url = id;
+			this.imageFallback();
+		} else {
+			fetch(`https://gif-emotes.opl.io/gif/${id}`)
+			.then(r => r.json())
+			.then(data => {
+				if (data.count === 0 || !data.count) {
+					this.url = `https://gif-emotes.opl.io/gif/${id}.gif`
+					this.imageFallback();
+				} else {
+					this.gifTiming = data.frames[0].delay;
+					this.frames = data.frames;
+					for (let index = 0; index < data.frames.length; index++) {
+						const frame = data.frames[index];
+						frame.image = new Image(frame.width, frame.height);
+						frame.image.crossOrigin = "anonymous";
+						setInterval(()=>{
+							frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
+						},1+index*20)
+					}
+					this.loadListener();
 				}
-			}
+			})
+		}
 
-
-		})
+		
 
 
 		this.canvas = document.createElement('canvas');
@@ -54,19 +57,34 @@ class GIF_Instance {
 		this.image.src = this.url;
 	}
 	imageFallbackListener() {
-		this.canvas.width = this.image.width;
-		this.canvas.height = this.image.height;
-		this.ctx.drawImage(this.image, 0, 0);
-		this.texture.needsUpdate = true;
-	}
-
-	loadListener() {
 		let pow = 2;
 		while (Math.pow(2, pow) < Math.max(this.image.width, this.image.height)) {
 			pow++;
 		}
 		this.canvas.width = Math.pow(2, pow);
 		this.canvas.height = Math.pow(2, pow);
+
+		const ratio = Math.min(this.canvas.height/this.image.height, this.canvas.width/this.image.width);
+
+		this.ctx.drawImage(this.image, 0, 0, this.image.width*ratio, this.image.height*ratio);
+		this.texture.needsUpdate = true;
+	}
+
+	loadListener() {
+		let pow = 2;
+		while (Math.pow(2, pow) < Math.max(this.frames[0].width, this.frames[0].height)) {
+			pow++;
+		}
+		this.canvas.width = Math.pow(2, pow);
+		this.canvas.height = Math.pow(2, pow);
+
+		const fx = this.frames[0].width;
+		const fy = this.frames[0].height;
+		if (fx >= fy) {
+			this.drawRatio = this.canvas.width / fx;
+		} else {
+			this.drawRatio = this.canvas.width / fy;
+		}
 
 		this.update();
 	}
@@ -82,11 +100,18 @@ class GIF_Instance {
 			this.lastFrame += timeDiff;
 		}
 
-		if (!this.frames[this.currentFrame].interlaced) {
-			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		if (this.frames[this.currentFrame].image.complete) {
+			if (!this.frames[this.currentFrame].interlaced) {
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			}
+			this.ctx.drawImage(
+				this.frames[this.currentFrame].image, 
+				this.frames[this.currentFrame].x*this.drawRatio, 
+				this.frames[this.currentFrame].y*this.drawRatio,
+				this.frames[this.currentFrame].width*this.drawRatio,
+				this.frames[this.currentFrame].height*this.drawRatio);
+			this.texture.needsUpdate = true;
 		}
-		this.ctx.drawImage(this.frames[this.currentFrame].image, this.frames[this.currentFrame].x, this.frames[this.currentFrame].y);
-		this.texture.needsUpdate = true;
 	}
 }
 

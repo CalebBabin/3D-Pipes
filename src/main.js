@@ -139,7 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
 							emote.sprite.scale.z = globalConfig.emoteScale;
 
 							scene.add(emote.sprite);
-							emote.sprite.lookAt(camera.position);
+							//emote.sprite.lookAt(camera.position);
 						}
 
 					}
