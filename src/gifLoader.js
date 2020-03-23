@@ -26,7 +26,7 @@ class GIF_Instance {
 						const frame = data.frames[index];
 						frame.image = new Image(frame.width, frame.height);
 						frame.image.crossOrigin = "anonymous";
-						frame.image.addEventListener('load', ()=>{
+							frame.image.addEventListener('load', () => {
 							this.loadedImages++;
 							if (this.loadedImages >= data.count) {
 							}
@@ -66,9 +66,9 @@ class GIF_Instance {
 		this.canvas.width = Math.pow(2, pow);
 		this.canvas.height = Math.pow(2, pow);
 
-		const ratio = Math.min(this.canvas.height/this.image.height, this.canvas.width/this.image.width);
+		const ratio = Math.min(this.canvas.height / this.image.height, this.canvas.width / this.image.width);
 
-		this.ctx.drawImage(this.image, 0, 0, this.image.width*ratio, this.image.height*ratio);
+		this.ctx.drawImage(this.image, 0, 0, this.image.width * ratio, this.image.height * ratio);
 		this.texture.needsUpdate = true;
 	}
 
@@ -80,19 +80,20 @@ class GIF_Instance {
 		this.canvas.width = Math.pow(2, pow);
 		this.canvas.height = Math.pow(2, pow);
 
-		const fx = this.frames[0].width;
+		/*const fx = this.frames[0].width;
 		const fy = this.frames[0].height;
 		if (fx >= fy) {
 			this.drawRatio = this.canvas.width / fx;
 		} else {
 			this.drawRatio = this.canvas.width / fy;
-		}
+		}*/
 
+		this.drawOffsetY = this.canvas.height - this.frames[0].height;
 		this.update();
 	}
 
 	update() {
-		window.setTimeout(this.update.bind(this), this.gifTiming*10);
+		window.setTimeout(this.update.bind(this), this.gifTiming * 10);
 
 		let timeDiff = Date.now() - this.lastFrame;
 		while (timeDiff > this.gifTiming * 10) {
@@ -100,20 +101,21 @@ class GIF_Instance {
 			if (this.currentFrame >= this.frames.length) this.currentFrame = 0;
 			timeDiff -= this.gifTiming;
 			this.lastFrame += timeDiff;
-		}
 
+			this.disposalMethod = this.frames[this.currentFrame].disposal;
 		if (this.frames[this.currentFrame].image.complete) {
-			if (!this.frames[this.currentFrame].interlaced) {
+				if (this.disposalMethod === 2) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			}
 			this.ctx.drawImage(
 				this.frames[this.currentFrame].image, 
-				this.frames[this.currentFrame].x*this.drawRatio, 
-				this.frames[this.currentFrame].y*this.drawRatio,
-				this.frames[this.currentFrame].width*this.drawRatio,
-				this.frames[this.currentFrame].height*this.drawRatio);
+					this.frames[this.currentFrame].x,
+					this.frames[this.currentFrame].y + this.drawOffsetY);
 			this.texture.needsUpdate = true;
 		}
+	}
+
+
 	}
 }
 
