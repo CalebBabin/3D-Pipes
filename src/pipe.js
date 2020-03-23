@@ -29,18 +29,19 @@ class Pipe {
 	constructor (scene, config = {}) {
 		this.config = Object.assign({
 			color: 0x777777*Math.random()+0x888888,
-			tickDistance: 4,
-			pipeWidth: 2,
-			pipeTickInterval: 1,
+			tickDistance: 1,
+			pipeWidth: 0.5,
+			pipeTickInterval: 2,
 			maximumTicks: 1400,
 			maximumDistance: 50,
-			chanceOfStraight: 40,
+			chanceOfStraight: 0,
+			teapot_chance: 1000, //a chance of 1 in x, the higher this is the less likely a teapot is
 		}, config);
 
 		this.scene = scene;
 
 		const randomPosition = () => {
-			let position = (rand(this.config.maximumDistance) - this.config.maximumDistance/2)*this.config.tickDistance;
+			let position = Math.round((rand(this.config.maximumDistance) - this.config.maximumDistance/2)/this.config.tickDistance)*this.config.tickDistance;
 			while (position > this.config.maximumDistance) position -= this.config.maximumDistance;  
 			while (position < -this.config.maximumDistance) position += this.config.maximumDistance;  
 			return position;
@@ -81,8 +82,12 @@ class Pipe {
 			options.push(this.direction);
 		}
 
+		removeTarget(options, (this.direction % 2 === 0) ? this.direction + 1 : this.direction - 1 );
+
 		if (this.config.map) {
-			for (let direction = 0; direction < 6; direction++) {
+			for (let i = 0; i < options.length; i++) {
+				const direction = options[i];
+
 				let futurePosition = [...this.pos];
 
 				futurePosition[Math.floor(direction/2)] += (direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
@@ -92,8 +97,6 @@ class Pipe {
 				}
 			}
 		}
-
-		removeTarget(options, (this.direction % 2 === 0) ? this.direction + 1 : this.direction - 1 );
 
 		for (let index = 0; index < this.pos.length; index++) {
 			// x+, x-, y+, y-, z+, z-
@@ -105,7 +108,12 @@ class Pipe {
 			}
 		}
 
-		this.direction = rand(options);
+		if (options.length > 0) {
+			this.direction = rand(options);
+		} else {
+			console.log('uh oh');
+			return 0;
+		}
 	}
 
 	tick () {
@@ -147,12 +155,12 @@ class Pipe {
 				const temp_geometry = Math.random() < 0.75 ? this.sphere_geometry : this.sphere_geometry2;
 				let sphere = new THREE.Mesh( (this.direction === this.lastDirection) ? this.sphere_geometry : temp_geometry, this.cylinder_material );
 
-				if (teapot_geometry && Math.random()*1000 < 1) {
+				if (teapot_geometry && Math.random()*this.config.teapot_chance < 1) {
 					sphere = new THREE.Mesh( teapot_geometry, this.cylinder_material );
 					sphere.rotation.x = -Math.PI/2
-					sphere.scale.x = 0.75;
-					sphere.scale.y = 0.75;
-					sphere.scale.z = 0.75;
+					sphere.scale.x = 0.5 * (this.config.pipeWidth/2);
+					sphere.scale.y = 0.5 * (this.config.pipeWidth/2);
+					sphere.scale.z = 0.5 * (this.config.pipeWidth/2);
 					sphere.position.y -= this.config.pipeWidth/1.5;
 				}
 

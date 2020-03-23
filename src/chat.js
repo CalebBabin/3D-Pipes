@@ -114,15 +114,14 @@ client.addListener('message', handleChat);
 
 const toiletEmotesArray = new Array();
 
-if (window.devEnvironment) {
+if (window.devEnvironment || true) {
 	const randomEmoteSelection = [
-		'admDailyQuest PepePls',
+		'SourPls ',
 		'FeelsAmazingMan Clap',
-		'admDailyQuest Clap',
 	];
 	setInterval(() => {
 		getEmoteArrayFromMessage(randomEmoteSelection[Math.floor(Math.random() * randomEmoteSelection.length)], []);
-	}, 400);
+	}, 100);
 }
 
 const emoteMaterials = {};

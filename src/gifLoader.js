@@ -14,31 +14,31 @@ class GIF_Instance {
 			this.imageFallback();
 		} else {
 			fetch(`https://gif-emotes.opl.io/gif/${id}`)
-			.then(r => r.json())
-			.then(data => {
-				if (data.count === 0 || !data.count) {
-					this.url = `https://gif-emotes.opl.io/gif/${id}.gif`
-					this.imageFallback();
-				} else {
-					this.gifTiming = data.frames[0].delay;
-					this.frames = data.frames;
-					for (let index = 0; index < data.frames.length; index++) {
-						const frame = data.frames[index];
-						frame.image = new Image(frame.width, frame.height);
-						frame.image.crossOrigin = "anonymous";
+				.then(r => r.json())
+				.then(data => {
+					if (data.count === 0 || !data.count) {
+						this.url = `https://gif-emotes.opl.io/gif/${id}.gif`
+						this.imageFallback();
+					} else {
+						this.gifTiming = data.frames[0].delay;
+						this.frames = data.frames;
+						for (let index = 0; index < data.frames.length; index++) {
+							const frame = data.frames[index];
+							frame.image = new Image(frame.width, frame.height);
+							frame.image.crossOrigin = "anonymous";
 							frame.image.addEventListener('load', () => {
-							this.loadedImages++;
-							if (this.loadedImages >= data.count) {
-							}
-						})
-						frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
+								this.loadedImages++;
+								if (this.loadedImages >= data.count) {
+								}
+							})
+							frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
+						}
+						this.loadListener();
 					}
-					this.loadListener();
-				}
-			})
+				})
 		}
 
-		
+
 
 
 		this.canvas = document.createElement('canvas');
@@ -47,8 +47,10 @@ class GIF_Instance {
 		this.ctx = this.canvas.getContext('2d');
 
 		this.texture = new THREE.CanvasTexture(this.canvas);
-		this.material = new THREE.SpriteMaterial({ map: this.texture, transparent: true });
-		this.rot_material = new THREE.SpriteMaterial({ map: this.texture, transparent: true, rotation: Math.PI / 2 });
+		//this.rot_texture = new THREE.CanvasTexture(this.canvas);
+		//this.rot_texture.rotation = Math.PI/2;
+		this.material = new THREE.MeshBasicMaterial({ map: this.texture, transparent: true });
+		//this.rot_material = new THREE.MeshBasicMaterial({ map: this.rot_texture, transparent: true/*, rotation: Math.PI / 2*/ });
 	}
 
 	imageFallback() {
@@ -103,17 +105,17 @@ class GIF_Instance {
 			this.lastFrame += timeDiff;
 
 			this.disposalMethod = this.frames[this.currentFrame].disposal;
-		if (this.frames[this.currentFrame].image.complete) {
+			if (this.frames[this.currentFrame].image.complete) {
 				if (this.disposalMethod === 2) {
-				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			}
-			this.ctx.drawImage(
-				this.frames[this.currentFrame].image, 
+					this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				}
+				this.ctx.drawImage(
+					this.frames[this.currentFrame].image,
 					this.frames[this.currentFrame].x,
 					this.frames[this.currentFrame].y + this.drawOffsetY);
-			this.texture.needsUpdate = true;
+				this.texture.needsUpdate = true;
+			}
 		}
-	}
 
 
 	}

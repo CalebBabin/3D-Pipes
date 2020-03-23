@@ -6,9 +6,20 @@ const chatIntegration = require('./chat.js');
 const pipeMap = new Map();
 
 const globalConfig = {
-	emoteScale: 7,
-	areaSize: 100,
+	emoteScale: 2,
+	areaSize: 20,
+	straightness: 40,
+	pipeWidth: 0.5,
+	pipeLength: 1,
+	cameraDistance: 25,
+	cameraNear: 5,
+	cameraFar: 1000,
+
+	minPipes: 1,
+	maxPipes: 10,
 }
+
+const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale*globalConfig.pipeWidth, globalConfig.emoteScale*globalConfig.pipeWidth);
 
 window.addEventListener('DOMContentLoaded', () => {
 	let camera, scene, renderer;
@@ -18,9 +29,9 @@ window.addEventListener('DOMContentLoaded', () => {
 	draw();
 
 	function init() {
-		camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 20, 1000);
-		camera.position.z = 100;
-		camera.position.x = 100;
+		camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, globalConfig.cameraNear, globalConfig.cameraFar);
+		camera.position.z = globalConfig.cameraDistance;
+		camera.position.x = globalConfig.cameraDistance;
 		camera.lookAt(0, 0, 0);
 
 		scene = new THREE.Scene();
@@ -56,9 +67,14 @@ window.addEventListener('DOMContentLoaded', () => {
 		})
 		document.body.appendChild(renderer.domElement);
 
-		const numberOfPipes = Math.random() * 4 + 1;
+		const numberOfPipes = Math.random() * (globalConfig.maxPipes-globalConfig.minPipes) + globalConfig.minPipes;
 		for (let index = 0; index < numberOfPipes; index++) {
-			pipes.push(new Pipe(scene, { map: pipeMap }));
+			pipes.push(new Pipe(scene, { 
+				map: pipeMap, 
+				tickDistance: globalConfig.pipeLength,
+				pipeWidth: globalConfig.pipeWidth,
+				chanceOfStraight: globalConfig.straightness, 
+			}));
 		}
 	}
 
@@ -94,15 +110,15 @@ window.addEventListener('DOMContentLoaded', () => {
 				}
 				chatIntegration.emotes.splice(index, 1);
 			} else {
-				emotes.progress += 0.001;
+				//emotes.progress += 0.001;
 
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
 					if (emote) {
 						if (!emote.sprite) {
-							emote.sprite = (emotes.direction === 2 || emotes.direction === 3) ?
-								new THREE.Sprite(emote.material.rot_material) :
-								new THREE.Sprite(emote.material.material);
+							const emoteOffset = globalConfig.pipeWidth + globalConfig.emoteScale/2;
+
+							emote.sprite = new THREE.Mesh(plane_geometry, new THREE.MeshBasicMaterial({color: 0xffffff}));
 
 							emote.sprite.position.x = emotes.x;
 							emote.sprite.position.y = emotes.y;
@@ -110,28 +126,38 @@ window.addEventListener('DOMContentLoaded', () => {
 
 							if (emotes.direction === 0 || emotes.direction === 1) {
 								emote.sprite.position.x += 0;
-								emote.sprite.position.y += 5;
+								emote.sprite.position.y += emoteOffset;
 								emote.sprite.position.z += 0;
+
+								emote.sprite.rotation.x = Math.PI/2;
+								emote.sprite.rotation.y = 0;
+								emote.sprite.rotation.z = 0;
 
 								emote.sprite.position.x += i*globalConfig.emoteScale;
 								emote.sprite.position.z -= i*globalConfig.emoteScale;
 							}
 							if (emotes.direction === 2 || emotes.direction === 3) {
-								emote.sprite.position.x -= 4;
+								emote.sprite.position.x += 0;
 								emote.sprite.position.y += 0;
-								emote.sprite.position.z += 4;
+								emote.sprite.position.z += emoteOffset;
 								
 								emote.sprite.position.y += i*globalConfig.emoteScale;
 
-								emote.sprite.rotation.z += Math.PI/2;
+								emote.sprite.rotation.x = 0; //Math.PI/2;
+								emote.sprite.rotation.y = Math.PI/2;
+								emote.sprite.rotation.z = Math.PI/2;
 							}
 							if (emotes.direction === 4 || emotes.direction === 5) {
 								emote.sprite.position.x += 0;
-								emote.sprite.position.y += 5;
+								emote.sprite.position.y += emoteOffset;
 								emote.sprite.position.z += 0;
-								
+
 								emote.sprite.position.x += i*globalConfig.emoteScale;
 								emote.sprite.position.z -= i*globalConfig.emoteScale;
+
+								emote.sprite.rotation.x = Math.PI/2;
+								emote.sprite.rotation.y = 0;
+								emote.sprite.rotation.z = 0;
 							}
 
 							emote.sprite.scale.x = globalConfig.emoteScale;
