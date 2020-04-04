@@ -3,20 +3,20 @@ const Pipe = require('./pipe.js');
 
 const chatIntegration = require('./chat.js');
 
-const pipeMap = new Map();
+let pipeMap = new Map();
 
 const globalConfig = {
 	emoteScale: 2,
 	areaSize: 20,
-	straightness: 40,
+	straightness: 40*2,
 	pipeWidth: 0.5,
-	pipeLength: 1,
+	pipeLength: 1/2,
 	cameraDistance: 25,
 	cameraNear: 5,
 	cameraFar: 1000,
 
 	minPipes: 1,
-	maxPipes: 10,
+	maxPipes: 6,
 }
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale*globalConfig.pipeWidth, globalConfig.emoteScale*globalConfig.pipeWidth);
@@ -36,29 +36,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 		scene = new THREE.Scene();
 
-		const light = new THREE.AmbientLight(0x555555); // soft white light
+		const light = new THREE.AmbientLight(0x555555);
 		scene.add(light);
 
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		light.position.set(0, 100, 0.25);
-		/*directionalLight.castShadow = true;
-		directionalLight.shadow.mapSize.width = Math.pow(2, 13);  // default
-		directionalLight.shadow.mapSize.height = Math.pow(2, 13); // default
-		directionalLight.shadow.camera.near = -100;
-		directionalLight.shadow.camera.far = 1000;
-
-		const shadowCameraSize = 300;
-		directionalLight.shadow.camera.left = -shadowCameraSize;
-		directionalLight.shadow.camera.bottom = -shadowCameraSize;
-		directionalLight.shadow.camera.top = shadowCameraSize;
-		directionalLight.shadow.camera.right = shadowCameraSize;*/
 
 
 		scene.add(directionalLight);
 
 		renderer = new THREE.WebGLRenderer({ antialias: true });
-		//renderer.shadowMap.enabled = true;
-		//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		window.addEventListener('resize', () => {
 			camera.aspect = window.innerWidth / window.innerHeight;
@@ -110,8 +97,6 @@ window.addEventListener('DOMContentLoaded', () => {
 				}
 				chatIntegration.emotes.splice(index, 1);
 			} else {
-				//emotes.progress += 0.001;
-
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
 					if (emote) {
