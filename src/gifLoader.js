@@ -28,8 +28,6 @@ class GIF_Instance {
 							frame.image.crossOrigin = "anonymous";
 							frame.image.addEventListener('load', () => {
 								this.loadedImages++;
-								if (this.loadedImages >= data.count) {
-								}
 							})
 							frame.image.src = `https://gif-emotes.opl.io/static/${id}/${index}.png`;
 						}
@@ -45,6 +43,9 @@ class GIF_Instance {
 		this.canvas.width = 128;
 		this.canvas.height = 128;
 		this.ctx = this.canvas.getContext('2d');
+
+		this.ctx.fillStyle = "red"
+		this.ctx.fillRect(0,0,100,10);
 
 		this.texture = new THREE.CanvasTexture(this.canvas);
 		//this.rot_texture = new THREE.CanvasTexture(this.canvas);
@@ -116,8 +117,6 @@ class GIF_Instance {
 				this.texture.needsUpdate = true;
 			}
 		}
-
-
 	}
 }
 

@@ -20,6 +20,7 @@ const globalConfig = {
 }
 
 const plane_geometry = new THREE.PlaneBufferGeometry(globalConfig.emoteScale*globalConfig.pipeWidth, globalConfig.emoteScale*globalConfig.pipeWidth);
+//const plane_geometry = new THREE.SphereBufferGeometry(globalConfig.pipeWidth/4, 20, 20);
 
 window.addEventListener('DOMContentLoaded', () => {
 	let camera, scene, renderer;
@@ -103,7 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
 						if (!emote.sprite) {
 							const emoteOffset = globalConfig.pipeWidth + globalConfig.emoteScale/2;
 
-							emote.sprite = new THREE.Mesh(plane_geometry, new THREE.MeshBasicMaterial({color: 0xffffff}));
+							emote.sprite = new THREE.Mesh(plane_geometry, new THREE.MeshBasicMaterial({map: emote.material.texture, transparent: true}));
 
 							emote.sprite.position.x = emotes.x;
 							emote.sprite.position.y = emotes.y;
@@ -138,7 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 								emote.sprite.rotation.x = Math.PI/2;
 								emote.sprite.rotation.y = 0;
-								emote.sprite.rotation.z = 0;
+								emote.sprite.rotation.z = -Math.PI/2;
 							}
 
 							emote.sprite.scale.x = globalConfig.emoteScale;
