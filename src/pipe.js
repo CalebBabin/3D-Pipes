@@ -31,7 +31,7 @@ class Pipe {
 			color: 0x777777*Math.random()+0x888888,
 			tickDistance: 1,
 			pipeWidth: 0.5,
-			pipeTickInterval: 2,
+			pipeTickInterval: 1,
 			maximumTicks: 1400,
 			maximumDistance: 50,
 			chanceOfStraight: 0,
