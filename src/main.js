@@ -7,10 +7,10 @@ let pipeMap = new Map();
 
 const globalConfig = {
 	emoteScale: 2,
-	areaSize: 20,
+	areaSize: 15,
 	straightness: 40*2,
 	pipeWidth: 0.5,
-	pipeLength: 1/2,
+	pipeLength: 1,
 	cameraDistance: 25,
 	cameraNear: 5,
 	cameraFar: 1000,
@@ -111,17 +111,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 							if (emotes.direction === 0 || emotes.direction === 1) {
 								emote.sprite.position.x += 0;
-								emote.sprite.position.y += emoteOffset;
-								emote.sprite.position.z += 0;
+								emote.sprite.position.y += 0;
+								emote.sprite.position.z += emoteOffset;
 
 								emote.sprite.rotation.x = Math.PI/2;
 								emote.sprite.rotation.y = 0;
 								emote.sprite.rotation.z = 0;
 
 								emote.sprite.position.x += i*globalConfig.emoteScale;
-								emote.sprite.position.z -= i*globalConfig.emoteScale;
-							}
-							if (emotes.direction === 2 || emotes.direction === 3) {
+							} else if (emotes.direction === 2 || emotes.direction === 3) {
 								emote.sprite.position.x += 0;
 								emote.sprite.position.y += 0;
 								emote.sprite.position.z += emoteOffset;
@@ -131,13 +129,11 @@ window.addEventListener('DOMContentLoaded', () => {
 								emote.sprite.rotation.x = 0; //Math.PI/2;
 								emote.sprite.rotation.y = Math.PI/2;
 								emote.sprite.rotation.z = Math.PI/2;
-							}
-							if (emotes.direction === 4 || emotes.direction === 5) {
-								emote.sprite.position.x += 0;
-								emote.sprite.position.y += emoteOffset;
+							} else if (emotes.direction === 4 || emotes.direction === 5) {
+								emote.sprite.position.x += emoteOffset;
+								emote.sprite.position.y += 0;
 								emote.sprite.position.z += 0;
 
-								emote.sprite.position.x += i*globalConfig.emoteScale;
 								emote.sprite.position.z -= i*globalConfig.emoteScale;
 
 								emote.sprite.rotation.x = Math.PI/2;
