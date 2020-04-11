@@ -114,7 +114,7 @@ client.addListener('message', handleChat);
 
 const toiletEmotesArray = new Array();
 
-if (window.devEnvironment || true) {
+if (window.devEnvironment) {
 	const randomEmoteSelection = [
 		'SourPls ',
 		'FeelsAmazingMan Clap',
