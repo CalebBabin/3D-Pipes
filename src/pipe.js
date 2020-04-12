@@ -33,7 +33,7 @@ class Pipe {
 			pipeWidth: 0.5,
 			pipeTickInterval: 1,
 			maximumTicks: 1400,
-			maximumDistance: 50,
+			maximumDistance: 25,
 			chanceOfStraight: 0,
 			teapot_chance: 1000, //a chance of 1 in x, the higher this is the less likely a teapot is
 		}, config);
