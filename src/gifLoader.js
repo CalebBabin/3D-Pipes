@@ -1,5 +1,10 @@
 import * as THREE from 'three';
 
+const frameLimit = 256;
+const emoteBlacklist = [
+	'5e0ea4610550d42106b8955a',
+	'566ca38765dbbdab32ec0560',
+]
 class GIF_Instance {
 	constructor(id) {
 		this.id = id;
@@ -11,21 +16,23 @@ class GIF_Instance {
 
 		if (id.match(/http/)) {
 			this.url = id;
-			this.imageFallback();
 		} else {
 			fetch(`https://gif-emotes.opl.io/gif/${id}`)
 				.then(r => r.json())
 				.then(data => {
-					if (data.count === 0 || !data.count) {
+					console.log(emoteBlacklist.includes(id))
+					if (data.count === 0 || !data.count || emoteBlacklist.includes(id)) {
 						this.url = `https://gif-emotes.opl.io/gif/${id}.gif`
 						this.imageFallback();
 					} else {
 						this.gifTiming = data.frames[0].delay;
 						this.frames = data.frames;
-						for (let index = 0; index < data.frames.length; index++) {
-							const frame = data.frames[index];
+						if (this.frames.length > frameLimit) this.frames = this.frames.splice(0, frameLimit);
+						
+						for (let index = 0; index < this.frames.length; index++) {
+							const frame = this.frames[index];
 							frame.image = new Image(frame.width, frame.height);
-							frame.image.crossOrigin = "anonymous";
+							frame.image.crossOrigin = "";
 							frame.image.addEventListener('load', () => {
 								this.loadedImages++;
 							})
@@ -35,9 +42,6 @@ class GIF_Instance {
 					}
 				})
 		}
-
-
-
 
 		this.canvas = document.createElement('canvas');
 		this.canvas.width = 128;

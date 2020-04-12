@@ -10,7 +10,7 @@ const globalConfig = {
 	areaSize: 15,
 	straightness: 40*2,
 	pipeWidth: 0.5,
-	pipeLength: 1,
+	pipeLength: 0.4,
 	cameraDistance: 25,
 	cameraNear: 5,
 	cameraFar: 1000,
