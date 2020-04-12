@@ -44,9 +44,6 @@ class GIF_Instance {
 		this.canvas.height = 128;
 		this.ctx = this.canvas.getContext('2d');
 
-		this.ctx.fillStyle = "red"
-		this.ctx.fillRect(0,0,100,10);
-
 		this.texture = new THREE.CanvasTexture(this.canvas);
 		//this.rot_texture = new THREE.CanvasTexture(this.canvas);
 		//this.rot_texture.rotation = Math.PI/2;

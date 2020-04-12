@@ -112,10 +112,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 							if (emotes.direction === 0 || emotes.direction === 1) {
 								emote.sprite.position.x += 0;
-								emote.sprite.position.y += 0;
-								emote.sprite.position.z += emoteOffset;
+								emote.sprite.position.y += emoteOffset;
+								emote.sprite.position.z += 0;
 
-								emote.sprite.rotation.x = Math.PI/2;
+								emote.sprite.rotation.x = 0;
 								emote.sprite.rotation.y = 0;
 								emote.sprite.rotation.z = 0;
 
@@ -131,15 +131,15 @@ window.addEventListener('DOMContentLoaded', () => {
 								emote.sprite.rotation.y = Math.PI/2;
 								emote.sprite.rotation.z = Math.PI/2;
 							} else if (emotes.direction === 4 || emotes.direction === 5) {
-								emote.sprite.position.x += emoteOffset;
-								emote.sprite.position.y += 0;
+								emote.sprite.position.x += 0;
+								emote.sprite.position.y += emoteOffset;
 								emote.sprite.position.z += 0;
 
-								emote.sprite.position.z -= i*globalConfig.emoteScale;
+								emote.sprite.rotation.x = 0;
+								emote.sprite.rotation.y = Math.PI/2;
+								emote.sprite.rotation.z = 0;
 
-								emote.sprite.rotation.x = Math.PI/2;
-								emote.sprite.rotation.y = 0;
-								emote.sprite.rotation.z = -Math.PI/2;
+								emote.sprite.position.z += i*globalConfig.emoteScale;
 							}
 
 							emote.sprite.scale.x = globalConfig.emoteScale;
