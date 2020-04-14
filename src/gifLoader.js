@@ -4,6 +4,8 @@ const frameLimit = 256;
 const emoteBlacklist = [
 	'5e0ea4610550d42106b8955a',
 	'566ca38765dbbdab32ec0560',
+	'55cb47a82718127806ad3202',
+	'5e6fa08bd112fc3725746dd4',
 ]
 class GIF_Instance {
 	constructor(id) {
@@ -16,11 +18,11 @@ class GIF_Instance {
 
 		if (id.match(/http/)) {
 			this.url = id;
+			this.imageFallback();
 		} else {
 			fetch(`https://gif-emotes.opl.io/gif/${id}`)
 				.then(r => r.json())
 				.then(data => {
-					console.log(emoteBlacklist.includes(id))
 					if (data.count === 0 || !data.count || emoteBlacklist.includes(id)) {
 						this.url = `https://gif-emotes.opl.io/gif/${id}.gif`
 						this.imageFallback();
@@ -49,10 +51,7 @@ class GIF_Instance {
 		this.ctx = this.canvas.getContext('2d');
 
 		this.texture = new THREE.CanvasTexture(this.canvas);
-		//this.rot_texture = new THREE.CanvasTexture(this.canvas);
-		//this.rot_texture.rotation = Math.PI/2;
-		this.material = new THREE.MeshBasicMaterial({ map: this.texture, transparent: true });
-		//this.rot_material = new THREE.MeshBasicMaterial({ map: this.rot_texture, transparent: true/*, rotation: Math.PI / 2*/ });
+		this.material = new THREE.MeshBasicMaterial({ map: this.texture, transparent: false });
 	}
 
 	imageFallback() {
@@ -74,6 +73,7 @@ class GIF_Instance {
 
 		this.ctx.drawImage(this.image, 0, 0, this.image.width * ratio, this.image.height * ratio);
 		this.texture.needsUpdate = true;
+		this.material.needsUpdate = true;
 	}
 
 	loadListener() {
@@ -92,32 +92,71 @@ class GIF_Instance {
 			this.drawRatio = this.canvas.width / fy;
 		}*/
 
-		this.drawOffsetY = this.canvas.height - this.frames[0].height;
 		this.update();
 	}
 
+	dispose(frameindex) {
+
+		if (frameindex === -1) {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		}
+
+		if (this.frames[frameindex].disposal == 2) {
+			/*this.ctx.clearRect(
+				0,
+				0,
+				this.canvas.width,
+				this.canvas.height);*/
+			this.ctx.clearRect(
+				this.frames[frameindex].x,
+				this.frames[frameindex].y,
+				this.frames[frameindex].width,
+				this.frames[frameindex].height);
+		}
+
+		if (this.frames[frameindex].disposal == 3) {
+			//this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			for (let index = frameindex-1; index >= 0; index--) {
+				const frame = this.frames[index];
+				if (frame.disposal !== 1 || index === 0) {
+					if (frame.image.complete) {
+						this.ctx.drawImage(frame.canvas, 0, 0);
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	update() {
-		window.setTimeout(this.update.bind(this), this.gifTiming * 10);
+		window.setTimeout(this.update.bind(this), this.frames[this.currentFrame].delay * 10);
 
 		let timeDiff = Date.now() - this.lastFrame;
-		while (timeDiff > this.gifTiming * 10) {
+		//while (timeDiff > this.gifTiming * 10) {
 			this.currentFrame++;
 			if (this.currentFrame >= this.frames.length) this.currentFrame = 0;
 			timeDiff -= this.gifTiming;
 			this.lastFrame += timeDiff;
 
-			this.disposalMethod = this.frames[this.currentFrame].disposal;
 			if (this.frames[this.currentFrame].image.complete) {
-				if (this.disposalMethod === 2) {
-					this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				}
+				this.dispose(Math.max(0, this.currentFrame-1));
+
 				this.ctx.drawImage(
 					this.frames[this.currentFrame].image,
-					this.frames[this.currentFrame].x,
-					this.frames[this.currentFrame].y + this.drawOffsetY);
+					0,
+					0);
 				this.texture.needsUpdate = true;
+				this.material.needsUpdate = true;
+
+				if (!this.frames[this.currentFrame].canvas) {
+					this.frames[this.currentFrame].canvas = document.createElement('canvas');
+					this.frames[this.currentFrame].canvas.width = this.canvas.width;
+					this.frames[this.currentFrame].canvas.height = this.canvas.height;
+					this.frames[this.currentFrame].ctx = this.frames[this.currentFrame].canvas.getContext('2d');
+					this.frames[this.currentFrame].ctx.drawImage(this.canvas, 0, 0);
+				}
 			}
-		}
+		//}
 	}
 }
 
