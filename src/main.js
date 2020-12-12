@@ -36,7 +36,7 @@ const Pipe = require('./pipe.js');
 
 
 
-let pipeMap = new Map();
+let pipeMap = {};
 
 const globalConfig = {
 	emoteScale: 2,
@@ -127,7 +127,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			if (!emotes.progress) {
 				emotes.progress = 0;
 				const key = getRandomKey(pipeMap);
-				const direction = pipeMap.get(key)[1];
+				const direction = pipeMap[key][1];
 				const coord = key.split(',');
 				for (let index = 0; index < coord.length; index++) {
 					coord[index] = Number(coord[index]);
@@ -208,12 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-function getRandomKey(collection) {
-	let index = Math.floor(Math.random() * collection.size);
-	let cntr = 0;
-	for (let key of collection.keys()) {
-		if (cntr++ === index) {
-			return key;
-		}
-	}
+function getRandomKey(obj) {
+	var keys = Object.keys(obj);
+	return keys[keys.length * Math.random() << 0];
 }

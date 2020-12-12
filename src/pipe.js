@@ -53,14 +53,13 @@ class Pipe {
 	}
 
 	reset() {
-		if (this.config) {
-			for (const key in this.config.map) {
-				if (this.config.map.hasOwnProperty(key) && this.config.map[key][0] === this.pipeID) {
-					delete this.config.map[key];
-				}
+		this.config = Object.assign(Object.assign({}, defaultConfig), this.passedConfig);
+
+		for (const key in this.config.map) {
+			if (this.config.map[key] && this.config.map[key][0] === this.pipeID) {
+				delete this.config.map[key];
 			}
 		}
-		this.config = Object.assign(Object.assign({}, defaultConfig), this.passedConfig);
 
 		if (!this.config.color) {
 			this.config.color = new THREE.Color(
@@ -125,7 +124,7 @@ class Pipe {
 
 				futurePosition[Math.floor(direction / 2)] += (direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
 
-				if (this.config.map.has(`${futurePosition[0]},${futurePosition[1]},${futurePosition[2]}`)) {
+				if (this.config.map[`${futurePosition[0]},${futurePosition[1]},${futurePosition[2]}`]) {
 					removeTarget(options, direction);
 				}
 			}
@@ -161,7 +160,7 @@ class Pipe {
 
 			this.pos[Math.floor(this.direction / 2)] += (this.direction % 2 === 0) ? this.config.tickDistance : -this.config.tickDistance;
 			if (this.config.map) {
-				this.config.map.set(`${this.pos[0]},${this.pos[1]},${this.pos[2]}`, [Number(this.pipeID), this.direction]);
+				this.config.map[`${this.pos[0]},${this.pos[1]},${this.pos[2]}`] = [Number(this.pipeID), this.direction];
 			}
 
 			if (this.direction === this.lastDirection && this.activePipe) {
