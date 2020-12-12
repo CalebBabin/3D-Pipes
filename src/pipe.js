@@ -25,32 +25,47 @@ const removeTarget = (array, target) => {
 	}
 }
 
+const defaultConfig = {
+	color: false,
+	tickDistance: 1,
+	pipeWidth: 0.5,
+	pipeTickInterval: 1,
+	maximumTicks: 1400,
+	maximumDistance: 25,
+	chanceOfStraight: 0,
+	teapot_chance: 1000, //a chance of 1 in x, the higher this is the less likely a teapot is
+};
+
 class Pipe {
 	constructor (scene, config = {}) {
-		this.config = Object.assign({
-			color: 0x777777*Math.random()+0x888888,
-			tickDistance: 1,
-			pipeWidth: 0.5,
-			pipeTickInterval: 1,
-			maximumTicks: 1400,
-			maximumDistance: 25,
-			chanceOfStraight: 0,
-			teapot_chance: 1000, //a chance of 1 in x, the higher this is the less likely a teapot is
-		}, config);
+		this.passedConfig = config;
+		this.scene = new THREE.Group();
+		scene.add(this.scene);
+		this.reset();
+		this.init();
+	}
 
-		this.scene = scene;
+	reset () {
+		this.config = Object.assign(Object.assign({}, defaultConfig), this.passedConfig);
 
-		const randomPosition = () => {
-			let position = Math.round((rand(this.config.maximumDistance) - this.config.maximumDistance/2)/this.config.tickDistance)*this.config.tickDistance;
-			while (position > this.config.maximumDistance) position -= this.config.maximumDistance;  
-			while (position < -this.config.maximumDistance) position += this.config.maximumDistance;  
-			return position;
+		if (!this.config.color) {
+			this.config.color = new THREE.Color(
+				`hsl(${Math.round(Math.random()*360)}, ${Math.round(Math.random()*25+75)}%, ${Math.round(Math.random()*50+25)}%)`
+			);
 		}
 
+		this.realTicks = 0;
+
+		for( var i = this.scene.children.length - 1; i >= 0; i--) { 
+			this.scene.remove(this.scene.children[i]); 
+		}
+	}
+
+	init () {
 		this.pos = [
-			randomPosition(), // x
-			randomPosition(), // y
-			randomPosition(), // z
+			this.randomPosition(), // x
+			this.randomPosition(), // y
+			this.randomPosition(), // z
 		];
 
 		this.meshes = [];
@@ -68,8 +83,13 @@ class Pipe {
 
 		this.sphere_geometry = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.1, 12, 12 );
 		this.sphere_geometry2 = new THREE.SphereBufferGeometry( this.config.pipeWidth*1.25, 12, 12 );
-		
+	}
 
+	randomPosition () {
+		let position = Math.round((rand(this.config.maximumDistance) - this.config.maximumDistance/2)/this.config.tickDistance)*this.config.tickDistance;
+		while (position > this.config.maximumDistance) position -= this.config.maximumDistance;  
+		while (position < -this.config.maximumDistance) position += this.config.maximumDistance;  
+		return position;
 	}
 
 	changeDirection () {
@@ -174,10 +194,7 @@ class Pipe {
 		}
 
 		if (this.realTicks > this.config.maximumTicks) {
-			if (!window.reloading) {
-				window.reloading = true;
-				window.location.reload();
-			}
+			this.reset();
 		}
 	}
 }

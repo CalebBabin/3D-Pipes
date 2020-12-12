@@ -12,6 +12,8 @@ if (query_vars.channels) {
 
 const ChatInstance = new Chat({
 	channels,
+	duplicateEmoteLimit: 1,
+	duplicateEmoteLimit_pleb: 0,
 })
 
 const emoteTextures = {};
@@ -46,7 +48,7 @@ const globalConfig = {
 	cameraNear: 5,
 	cameraFar: 1000,
 
-	emotetimescale: 0.001,
+	emotetimescale: 0.25,
 
 	minPipes: 1,
 	maxPipes: 6,
@@ -99,8 +101,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	let lastFrame = Date.now();
 	function draw() {
 		requestAnimationFrame(draw);
+		const delta = (Date.now() - lastFrame) / 1000;
+		lastFrame = Date.now();
 
 		for (const key in emoteTextures) {
 			if (emoteTextures.hasOwnProperty(key)) {
@@ -130,7 +135,6 @@ window.addEventListener('DOMContentLoaded', () => {
 				emotes.x = coord[0];
 				emotes.y = coord[1];
 				emotes.z = coord[2];
-				console.log(coord)
 				emotes.direction = direction;
 			}
 
@@ -141,7 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
 				}
 				pendingEmoteArray.splice(index, 1);
 			} else {
-				emotes.progress+= globalConfig.emotetimescale;
+				emotes.progress += globalConfig.emotetimescale * delta;
 				for (let i = 0; i < emotes.emotes.length; i++) {
 					const emote = emotes.emotes[i];
 					if (!emote.sprite) {
@@ -200,11 +204,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		renderer.render(scene, camera);
 	}
 })
-
-/*
-setTimeout(()=>{
-	window.location.reload();
-}, 10000);*/
 
 
 
