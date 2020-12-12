@@ -33,6 +33,7 @@ const defaultConfig = {
 	maximumTicks: 1400,
 	maximumDistance: 25,
 	chanceOfStraight: 0,
+	tickOffset: 0,
 	teapot_chance: 1000, //a chance of 1 in x, the higher this is the less likely a teapot is
 };
 
@@ -46,6 +47,7 @@ class Pipe {
 		this.scene = new THREE.Group();
 		scene.add(this.scene);
 		this.reset();
+		this.realTicks = Math.round(this.config.maximumTicks * this.config.tickOffset);
 		this.init();
 	}
 

@@ -97,6 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
 				tickDistance: globalConfig.pipeLength,
 				pipeWidth: globalConfig.pipeWidth,
 				chanceOfStraight: globalConfig.straightness,
+				tickOffset: index / numberOfPipes,
 			}));
 		}
 	}
