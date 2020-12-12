@@ -48,6 +48,7 @@ class Pipe {
 		scene.add(this.scene);
 		this.reset();
 		this.realTicks = Math.round(this.config.maximumTicks * this.config.tickOffset);
+
 		this.init();
 	}
 
@@ -85,7 +86,6 @@ class Pipe {
 		this.activePipe = null;
 
 		this.ticks = 0;
-		this.realTicks = 0;
 
 		// x+, x-, y+, y-, z+, z-
 		this.direction = rand(6);
