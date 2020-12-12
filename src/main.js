@@ -126,7 +126,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			if (!emotes.progress) {
 				emotes.progress = 0;
 				const key = getRandomKey(pipeMap);
-				const direction = pipeMap.get(key);
+				const direction = pipeMap.get(key)[1];
 				const coord = key.split(',');
 				for (let index = 0; index < coord.length; index++) {
 					coord[index] = Number(coord[index]);
