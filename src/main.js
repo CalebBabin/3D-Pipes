@@ -24,6 +24,9 @@ ChatInstance.on("emotes", (e) => {
 		const emote = e.emotes[index];
 		if (!emoteTextures[emote.material.id]) {
 			emoteTextures[emote.material.id] = new THREE.CanvasTexture(emote.material.canvas);
+			emoteTextures[emote.material.id].anisotropy = 16;
+			emoteTextures[emote.material.id].magFilter = THREE.LinearMipmapLinearFilter;
+			emoteTextures[emote.material.id].minFilter = THREE.LinearMipmapLinearFilter;
 		}
 		emote.texture = emoteTextures[emote.material.id];
 		output.emotes.push(emote);
